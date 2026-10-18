@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Study Helper</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f3f4;
+        margin: 0;
+        padding: 20px;
+      }
+      .card {
+        max-width: 700px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        color: #8b1538;
+        margin-top: 0;
+      }
+      label {
+        font-weight: bold;
+        display: block;
+        margin: 14px 0 6px;
+      }
+      textarea,
+      select,
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        box-sizing: border-box;
+      }
+      textarea {
+        min-height: 130px;
+      }
+      button {
+        margin-top: 16px;
+        width: 100%;
+        padding: 12px;
+        background: #1e293b;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #8b1538;
+      }
+      #output {
+        white-space: pre-wrap;
+        margin-top: 20px;
+        padding: 15px;
+        background: #faf7f8;
+        border-radius: 8px;
+        line-height: 1.5;
+      }
+      small {
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>AI Study Helper</h1>
+      <small>Paste your notes, pick a mode, and let AI help you study.</small>
+
+      <label>Groq API Key (kept only in your browser)</label>
+      <input
+        type="password"
+        id="apiKey"
+        placeholder="Paste your key from console.groq.com"
+      />
+
+      <label>Your text</label>
+      <textarea
+        id="userText"
+        placeholder="Paste a topic or notes here..."
+      ></textarea>
+
+      <label>What should AI do?</label>
+      <select id="mode">
+        <option value="explain">Explain it simply</option>
+        <option value="summarize">Summarize in 5 bullet points</option>
+        <option value="quiz">Make a 5-question quiz</option>
+      </select>
+
+      <button id="goBtn">Generate</button>
+      <div id="output">Your result will appear here.</div>
+    </div>
+
+    <script>
+      const MODEL = 'openai/gpt-oss-120b'; // for faster replies use "openai/gpt-oss-20b"
+
+      const prompts = {
+        explain:
+          'Explain the following text in very simple words, like I am a beginner:\n\n',
+        summarize:
+          'Summarize the following text in exactly 5 short bullet points:\n\n',
+        quiz: 'Create a 5-question multiple choice quiz (with answers at the end) from the following text:\n\n',
+      };
+
+      const keyInput = document.getElementById('apiKey');
+      keyInput.value = localStorage.getItem('groq_key') || '';
+
+      document.getElementById('goBtn').addEventListener('click', async () => {
+        const key = keyInput.value.trim();
+        const text = document.getElementById('userText').value.trim();
+        const mode = document.getElementById('mode').value;
+        const out = document.getElementById('output');
+
+        if (!key) {
+          out.textContent = 'Please paste your Groq API key first.';
+          return;
+        }
+        if (!text) {
+          out.textContent = 'Please enter some text.';
+          return;
+        }
+
+        localStorage.setItem('groq_key', key);
+        out.textContent = 'Thinking...';
+
+        try {
+          const res = await fetch(
+            'https://api.groq.com/openai/v1/chat/completions',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + key,
+              },
+              body: JSON.stringify({
+                model: MODEL,
+                messages: [{ role: 'user', content: prompts[mode] + text }],
+              }),
+            }
+          );
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error?.message || 'Request failed');
+          out.textContent = data.choices[0].message.content;
+        } catch (err) {
+          out.textContent = 'Error: ' + err.message;
+        }
+      });
+    </script>
+  </body>
+</html>
