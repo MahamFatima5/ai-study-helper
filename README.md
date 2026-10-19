@@ -4,9 +4,6 @@ A simple AI-powered web app that helps students study. Paste your notes, pick a 
 
 Built as the **Module 5 (AI Tools & Mini Project)** submission for the Codomax Digital Solutions internship.
 
-## Screenshot
-<!-- After uploading a screenshot to the repo, replace this line with: ![AI Study Helper](screenshot.png) -->
-
 ## Features
 - **Explain simply**: breaks down any topic in beginner-friendly words
 - **Summarize**: turns notes into 5 short bullet points
