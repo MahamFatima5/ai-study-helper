@@ -4,130 +4,769 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AI Study Helper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f5f3f4;
-        margin: 0;
-        padding: 20px;
+      :root {
+        --bg: #eef1f9;
+        --ink: #16233f;
+        --ink-soft: #55627d;
+        --line: #dde3f0;
+        --card: #ffffff;
+        --accent: #5b47e0;
+        --accent-deep: #3f2fb8;
+        --marker: #ffe066;
+        --margin: #f4a9b8;
+        --ok: #1f9d8a;
+        --display: 'Bricolage Grotesque', 'Trebuchet MS', sans-serif;
+        --body: 'Figtree', 'Segoe UI', Arial, sans-serif;
       }
-      .card {
-        max-width: 700px;
-        margin: 30px auto;
-        background: #fff;
-        padding: 25px;
-        border-radius: 14px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-      }
-      h1 {
-        color: #8b1538;
-        margin-top: 0;
-      }
-      label {
-        font-weight: bold;
-        display: block;
-        margin: 14px 0 6px;
-      }
-      textarea,
-      select,
-      input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 15px;
+      * {
         box-sizing: border-box;
       }
-      textarea {
-        min-height: 130px;
+      html {
+        scroll-behavior: smooth;
       }
-      button {
-        margin-top: 16px;
-        width: 100%;
-        padding: 12px;
-        background: #1e293b;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
+      body {
+        margin: 0;
+        font-family: var(--body);
+        color: var(--ink);
+        background: radial-gradient(
+            900px 500px at 8% -10%,
+            #dcd6ff 0%,
+            transparent 60%
+          ),
+          radial-gradient(800px 500px at 100% 0%, #fff3b8 0%, transparent 55%),
+          var(--bg);
+        min-height: 100vh;
+        line-height: 1.55;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 22px 20px 60px;
+      }
+
+      /* top bar */
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 20px;
+      }
+      .brand svg {
+        width: 34px;
+        height: 34px;
+      }
+      .key-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.75);
+        color: var(--ink);
+        padding: 9px 14px;
+        border-radius: 999px;
+        font: 600 14px var(--body);
         cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
       }
-      button:hover {
-        background: #8b1538;
+      .key-btn:hover {
+        background: #fff;
+        border-color: var(--accent);
       }
-      #output {
-        white-space: pre-wrap;
-        margin-top: 20px;
-        padding: 15px;
-        background: #faf7f8;
+      .key-panel {
+        margin-top: 14px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px 18px;
+        display: grid;
+        gap: 8px;
+      }
+      .key-panel[hidden] {
+        display: none;
+      }
+      .key-panel label {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .key-panel small {
+        color: var(--ink-soft);
+      }
+      .key-panel input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        font: 500 15px var(--body);
+        color: var(--ink);
+        background: #f9faff;
+      }
+
+      /* hero */
+      .hero {
+        padding: 44px 0 26px;
+        max-width: 720px;
+      }
+      .hero h1 {
+        font-family: var(--display);
+        font-weight: 800;
+        font-size: clamp(34px, 6vw, 58px);
+        line-height: 1.04;
+        letter-spacing: -0.02em;
+        margin: 0 0 14px;
+        animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      }
+      .hero p {
+        margin: 0;
+        font-size: 18px;
+        color: var(--ink-soft);
+        max-width: 56ch;
+        animation: rise 0.7s 0.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* layout */
+      .grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 22px;
+        align-items: start;
+      }
+      @media (max-width: 880px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background: var(--card);
+        border-radius: 22px;
+        box-shadow: 0 1px 0 rgba(22, 35, 63, 0.04),
+          0 22px 50px -28px rgba(63, 47, 184, 0.45);
+        overflow: hidden;
+      }
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 16px 22px;
+        border-bottom: 1px solid var(--line);
+        font-family: var(--display);
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .count {
+        font: 500 13px var(--body);
+        color: var(--ink-soft);
+      }
+
+      /* notebook paper */
+      .paper {
+        position: relative;
+        padding: 0 22px 0 58px;
+        background-color: #fffefb;
+      }
+      .paper::before {
+        content: '';
+        position: absolute;
+        left: 44px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--margin);
+      }
+      .paper textarea {
+        display: block;
+        width: 100%;
+        min-height: 260px;
+        border: 0;
+        outline: 0;
+        resize: vertical;
+        background-color: transparent;
+        background-image: repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 31px,
+          #dfe5f3 31px,
+          #dfe5f3 32px
+        );
+        background-attachment: local;
+        font: 500 16px/32px var(--body);
+        color: var(--ink);
+        padding: 4px 0 8px;
+      }
+      .paper textarea::placeholder {
+        color: #9aa5bd;
+      }
+
+      /* modes */
+      .controls {
+        padding: 18px 22px 22px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 14px;
+      }
+      .modes {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      @media (max-width: 520px) {
+        .modes {
+          grid-template-columns: 1fr;
+        }
+      }
+      .mode input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .mode span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 10px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        font-weight: 600;
+        font-size: 14.5px;
+        cursor: pointer;
+        background: #fff;
+        transition: background 0.18s, border-color 0.18s, transform 0.18s;
+      }
+      .mode span:hover {
+        border-color: var(--accent);
+      }
+      .mode input:checked + span {
+        background: linear-gradient(
+          transparent 12%,
+          var(--marker) 12%,
+          var(--marker) 88%,
+          transparent 88%
+        );
+        border-color: transparent;
+        transform: rotate(-1deg);
+      }
+      .mode input:focus-visible + span {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+      }
+      .go {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px 18px;
+        border: 0;
+        border-radius: 14px;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+        color: #fff;
+        font: 700 16px var(--body);
+        box-shadow: 0 14px 26px -14px rgba(91, 71, 224, 0.9);
+        transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      }
+      .go:hover {
+        filter: brightness(1.08);
+        transform: translateY(-1px);
+      }
+      .go:active {
+        transform: translateY(1px) scale(0.99);
+      }
+      .go:disabled {
+        opacity: 0.65;
+        cursor: wait;
+      }
+      .ghost {
+        padding: 15px 16px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: #fff;
+        font: 600 14.5px var(--body);
+        color: var(--ink);
+        cursor: pointer;
+        transition: border-color 0.2s;
+      }
+      .ghost:hover {
+        border-color: var(--accent);
+      }
+      button:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* result */
+      .result-body {
+        padding: 22px 24px 26px;
+        min-height: 320px;
+      }
+      .empty {
+        color: var(--ink-soft);
+        display: grid;
+        gap: 10px;
+        justify-items: start;
+        padding-top: 6px;
+      }
+      .empty svg {
+        width: 54px;
+        height: 54px;
+      }
+      .empty strong {
+        color: var(--ink);
+        font-family: var(--display);
+        font-size: 20px;
+      }
+      .out {
+        font-size: 16.5px;
+        line-height: 1.7;
+        max-width: 62ch;
+      }
+      .out p {
+        margin: 0 0 12px;
+      }
+      .out h3 {
+        font-family: var(--display);
+        font-size: 19px;
+        margin: 18px 0 8px;
+      }
+      .out ul,
+      .out ol {
+        padding-left: 22px;
+        margin: 0 0 14px;
+      }
+      .out li {
+        margin-bottom: 8px;
+        padding-left: 4px;
+      }
+      .out li::marker {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .out strong {
+        background: linear-gradient(transparent 55%, var(--marker) 55%);
+        padding: 0 2px;
+      }
+      .error {
+        color: #b3261e;
+        background: #fdeceb;
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-weight: 500;
+      }
+
+      .skeleton {
+        display: grid;
+        gap: 12px;
+      }
+      .skeleton i {
+        display: block;
+        height: 14px;
         border-radius: 8px;
-        line-height: 1.5;
+        background: linear-gradient(
+          90deg,
+          #eceff8 25%,
+          #f7f8fd 40%,
+          #eceff8 55%
+        );
+        background-size: 300% 100%;
+        animation: shimmer 1.2s infinite linear;
       }
-      small {
-        color: #666;
+      .skeleton i:nth-child(2) {
+        width: 92%;
+      }
+      .skeleton i:nth-child(3) {
+        width: 78%;
+      }
+      .skeleton i:nth-child(4) {
+        width: 85%;
+      }
+      .skeleton i:nth-child(5) {
+        width: 60%;
+      }
+      @keyframes shimmer {
+        from {
+          background-position: 100% 0;
+        }
+        to {
+          background-position: 0 0;
+        }
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 26px;
+        transform: translate(-50%, 20px);
+        background: var(--ink);
+        color: #fff;
+        padding: 11px 18px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 14px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s, transform 0.25s;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      footer {
+        margin-top: 34px;
+        text-align: center;
+        color: var(--ink-soft);
+        font-size: 14px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1>AI Study Helper</h1>
-      <small>Paste your notes, pick a mode, and let AI help you study.</small>
+    <div class="wrap">
+      <header class="top">
+        <div class="brand">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <rect x="6" y="4" width="26" height="32" rx="5" fill="#5b47e0" />
+            <rect x="11" y="11" width="16" height="4" rx="2" fill="#ffe066" />
+            <rect
+              x="11"
+              y="19"
+              width="16"
+              height="2.5"
+              rx="1.25"
+              fill="#fff"
+              opacity=".8"
+            />
+            <rect
+              x="11"
+              y="25"
+              width="10"
+              height="2.5"
+              rx="1.25"
+              fill="#fff"
+              opacity=".8"
+            />
+          </svg>
+          AI Study Helper
+        </div>
+        <button
+          class="key-btn"
+          id="keyToggle"
+          aria-expanded="false"
+          aria-controls="keyPanel"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="8" cy="15" r="4" />
+            <path d="M10.8 12.2 20 3m-4 4 3 3m-6-1 2 2" />
+          </svg>
+          API key
+        </button>
+      </header>
 
-      <label>Groq API Key (kept only in your browser)</label>
-      <input
-        type="password"
-        id="apiKey"
-        placeholder="Paste your key from console.groq.com"
-      />
+      <section class="key-panel" id="keyPanel" hidden>
+        <label for="apiKey">Groq API key</label>
+        <input
+          type="password"
+          id="apiKey"
+          placeholder="gsk_..."
+          autocomplete="off"
+        />
+        <small
+          >Saved only in this browser. Get a free key at
+          console.groq.com/keys.</small
+        >
+      </section>
 
-      <label>Your text</label>
-      <textarea
-        id="userText"
-        placeholder="Paste a topic or notes here..."
-      ></textarea>
+      <section class="hero">
+        <h1>Turn messy notes into something you can study.</h1>
+        <p>
+          Paste what you're learning. Get a simple explanation, a short summary,
+          or a quiz to test yourself.
+        </p>
+      </section>
 
-      <label>What should AI do?</label>
-      <select id="mode">
-        <option value="explain">Explain it simply</option>
-        <option value="summarize">Summarize in 5 bullet points</option>
-        <option value="quiz">Make a 5-question quiz</option>
-      </select>
+      <main class="grid">
+        <section class="panel">
+          <div class="panel-head">
+            <span>Your notes</span>
+            <span class="count" id="count">0 words</span>
+          </div>
+          <div class="paper">
+            <textarea
+              id="userText"
+              placeholder="Paste a topic, a paragraph, or your class notes here..."
+              aria-label="Your notes"
+            ></textarea>
+          </div>
+          <div class="controls">
+            <div
+              class="modes"
+              role="radiogroup"
+              aria-label="What should AI do?"
+            >
+              <label class="mode"
+                ><input type="radio" name="mode" value="explain" checked /><span
+                  >Explain simply</span
+                ></label
+              >
+              <label class="mode"
+                ><input type="radio" name="mode" value="summarize" /><span
+                  >Summarize</span
+                ></label
+              >
+              <label class="mode"
+                ><input type="radio" name="mode" value="quiz" /><span
+                  >Make a quiz</span
+                ></label
+              >
+            </div>
+            <div class="row">
+              <button class="go" id="goBtn">Generate</button>
+              <button class="ghost" id="sampleBtn" type="button">
+                Use sample
+              </button>
+            </div>
+          </div>
+        </section>
 
-      <button id="goBtn">Generate</button>
-      <div id="output">Your result will appear here.</div>
+        <section class="panel">
+          <div class="panel-head">
+            <span>Study material</span>
+            <button
+              class="ghost"
+              id="copyBtn"
+              type="button"
+              style="padding: 8px 14px; display: none"
+            >
+              Copy
+            </button>
+          </div>
+          <div class="result-body" id="result" aria-live="polite">
+            <div class="empty">
+              <svg viewBox="0 0 54 54" aria-hidden="true">
+                <rect
+                  x="8"
+                  y="6"
+                  width="38"
+                  height="42"
+                  rx="8"
+                  fill="#ece9ff"
+                />
+                <rect
+                  x="16"
+                  y="16"
+                  width="22"
+                  height="6"
+                  rx="3"
+                  fill="#ffe066"
+                />
+                <rect
+                  x="16"
+                  y="28"
+                  width="22"
+                  height="3"
+                  rx="1.5"
+                  fill="#b9b0f5"
+                />
+                <rect
+                  x="16"
+                  y="35"
+                  width="14"
+                  height="3"
+                  rx="1.5"
+                  fill="#b9b0f5"
+                />
+              </svg>
+              <strong>Nothing here yet</strong>
+              <span>Add your notes, choose a mode, and select Generate.</span>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        Built with HTML, CSS, JavaScript and OpenAI's GPT-OSS on Groq
+      </footer>
     </div>
 
+    <div class="toast" id="toast">Copied</div>
+
     <script>
-      const MODEL = 'openai/gpt-oss-120b'; // for faster replies use "openai/gpt-oss-20b"
+      const MODEL = 'openai/gpt-oss-120b'; // faster option: "openai/gpt-oss-20b"
 
       const prompts = {
         explain:
-          'Explain the following text in very simple words, like I am a beginner:\n\n',
+          'Explain the following text in very simple words, like I am a beginner. Use short paragraphs and put key terms in **bold**:\n\n',
         summarize:
-          'Summarize the following text in exactly 5 short bullet points:\n\n',
-        quiz: 'Create a 5-question multiple choice quiz (with answers at the end) from the following text:\n\n',
+          "Summarize the following text in exactly 5 short bullet points. Start each line with '- ' and put key terms in **bold**:\n\n",
+        quiz: "Create a 5-question multiple choice quiz from the following text. Number each question, list options A to D on separate lines starting with '- ', and put an 'Answers' section at the end:\n\n",
       };
 
-      const keyInput = document.getElementById('apiKey');
-      keyInput.value = localStorage.getItem('groq_key') || '';
+      const sample =
+        'Photosynthesis is the process by which plants use sunlight, water and carbon dioxide to make food and oxygen. It happens mostly in the leaves, inside tiny structures called chloroplasts that contain chlorophyll, the green pigment that absorbs light.';
 
-      document.getElementById('goBtn').addEventListener('click', async () => {
+      const $ = (id) => document.getElementById(id);
+      const keyInput = $('apiKey'),
+        textArea = $('userText'),
+        result = $('result');
+      const goBtn = $('goBtn'),
+        copyBtn = $('copyBtn');
+      let rawResult = '';
+
+      // saved key
+      try {
+        keyInput.value = localStorage.getItem('groq_key') || '';
+      } catch (e) {}
+      if (!keyInput.value) {
+        $('keyPanel').hidden = false;
+        $('keyToggle').setAttribute('aria-expanded', 'true');
+      }
+
+      $('keyToggle').addEventListener('click', () => {
+        const panel = $('keyPanel');
+        panel.hidden = !panel.hidden;
+        $('keyToggle').setAttribute('aria-expanded', String(!panel.hidden));
+      });
+
+      // word counter
+      function updateCount() {
+        const n = textArea.value.trim()
+          ? textArea.value.trim().split(/\s+/).length
+          : 0;
+        $('count').textContent = n + (n === 1 ? ' word' : ' words');
+      }
+      textArea.addEventListener('input', updateCount);
+      $('sampleBtn').addEventListener('click', () => {
+        textArea.value = sample;
+        updateCount();
+      });
+
+      // safe formatter: builds DOM nodes instead of injecting HTML
+      function inline(parent, str) {
+        str.split(/(\*\*[^*]+\*\*)/g).forEach((part) => {
+          if (/^\*\*.+\*\*$/.test(part)) {
+            const b = document.createElement('strong');
+            b.textContent = part.slice(2, -2);
+            parent.appendChild(b);
+          } else if (part) {
+            parent.appendChild(document.createTextNode(part));
+          }
+        });
+      }
+      function render(text) {
+        const box = document.createElement('div');
+        box.className = 'out';
+        let list = null;
+        text.split('\n').forEach((raw) => {
+          const line = raw.trim();
+          if (!line) {
+            list = null;
+            return;
+          }
+          const m = line.match(/^([-*•]|\d+[.)])\s+(.*)/);
+          if (m) {
+            const ordered = /\d/.test(m[1]);
+            const tag = ordered ? 'ol' : 'ul';
+            if (!list || list.tagName.toLowerCase() !== tag) {
+              list = document.createElement(tag);
+              if (ordered) list.start = parseInt(m[1], 10);
+              box.appendChild(list);
+            }
+            const li = document.createElement('li');
+            inline(li, m[2]);
+            list.appendChild(li);
+          } else {
+            list = null;
+            const h = line.match(/^#{1,6}\s+(.*)/);
+            const el = document.createElement(h ? 'h3' : 'p');
+            inline(el, h ? h[1] : line);
+            box.appendChild(el);
+          }
+        });
+        result.replaceChildren(box);
+      }
+
+      function showError(msg) {
+        copyBtn.style.display = 'none';
+        const d = document.createElement('div');
+        d.className = 'error';
+        d.textContent = msg;
+        result.replaceChildren(d);
+      }
+
+      function showLoading() {
+        copyBtn.style.display = 'none';
+        result.innerHTML =
+          '<div class="skeleton"><i></i><i></i><i></i><i></i><i></i></div>';
+      }
+
+      goBtn.addEventListener('click', async () => {
         const key = keyInput.value.trim();
-        const text = document.getElementById('userText').value.trim();
-        const mode = document.getElementById('mode').value;
-        const out = document.getElementById('output');
+        const text = textArea.value.trim();
+        const mode = document.querySelector('input[name="mode"]:checked').value;
 
         if (!key) {
-          out.textContent = 'Please paste your Groq API key first.';
-          return;
+          $('keyPanel').hidden = false;
+          return showError(
+            'Add your Groq API key first. Select API key at the top.'
+          );
         }
-        if (!text) {
-          out.textContent = 'Please enter some text.';
-          return;
-        }
+        if (!text)
+          return showError('Add some notes first, or select Use sample.');
 
-        localStorage.setItem('groq_key', key);
-        out.textContent = 'Thinking...';
+        try {
+          localStorage.setItem('groq_key', key);
+        } catch (e) {}
+        goBtn.disabled = true;
+        goBtn.textContent = 'Generating...';
+        showLoading();
 
         try {
           const res = await fetch(
@@ -145,10 +784,29 @@
             }
           );
           const data = await res.json();
-          if (!res.ok) throw new Error(data.error?.message || 'Request failed');
-          out.textContent = data.choices[0].message.content;
+          if (!res.ok)
+            throw new Error(data.error?.message || 'The request failed.');
+          rawResult = data.choices[0].message.content;
+          render(rawResult);
+          copyBtn.style.display = 'inline-block';
         } catch (err) {
-          out.textContent = 'Error: ' + err.message;
+          showError('Something went wrong: ' + err.message);
+        } finally {
+          goBtn.disabled = false;
+          goBtn.textContent = 'Generate';
+        }
+      });
+
+      copyBtn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(rawResult);
+          const t = $('toast');
+          t.classList.add('show');
+          setTimeout(() => t.classList.remove('show'), 1600);
+        } catch (e) {
+          showError(
+            "Copy didn't work in this browser. Select the text and copy it manually."
+          );
         }
       });
     </script>
